@@ -1,46 +1,27 @@
 function solution(jobs) {
-    let answer = 0;
-    let jobsCnt = jobs.length; //이거 따로 저장안하면 null나옴..왜지
-    let waitingList = []; //대기 리스트 -> 요청시점 지난 작업들. 처리시간으로 정렬하고 순서대로 처리
-    
-   let jobList = jobs.sort((a,b) => {
-       if (a[0] === b[0]) {return a[1]-b[1]} //요청시간 같으면 처리시간 짧은 순서로
-       else {return a[0]-b[0]}
-   }); //요청시간 순서대로 정렬
-    
-    let currentTime = jobList[0][0]; //현재 시간
-    
-    //각 시점에서 처리시간 짧은 것 선택
-    while (jobList.length > 0){
-        let job = jobList[0];  // 요청시간 가장 빠른 것 선택
-        if(currentTime > job[0]){ //선택한 것의 요청시간이 지났다면, waitingList에 적재
-            waitingList.push(job);
-            jobList.shift();
-        } else { //안지났다면, 처리
-            if (waitingList.length > 0){ //대기중인게 있음
-                waitingList.sort((a,b) => a[1]-b[1]);
-                let waitJob = waitingList.shift();
-                currentTime += waitJob[1];
-                answer += currentTime - waitJob[0];//요청시점의 시간 뺌
-            } else{ //대기하는게 없으면
-                currentTime = job[0] + job[1]; //처리
-                answer += job[1];
-                jobList.shift();
-            }
+    let ans = 0;
+    let jobsCnt = jobs.length;
+    if (jobsCnt === 0) return 0; // 작업이 없는 경우 0 반환
+
+    jobs.sort((a, b) => a[0] - b[0] || a[1] - b[1]); // 요청 시점으로 먼저 정렬, 그 후 소요 시간으로 정렬
+
+    let currentTime = jobs[0][0];
+    let waitq = [];
+
+    while (jobs.length > 0 || waitq.length > 0) {
+        while (jobs.length > 0 && jobs[0][0] <= currentTime) {
+            waitq.push(jobs.shift()); // 요청 시점이 현재 시간 이하인 작업을 대기열에 추가
         }
-        
-        //남아있는 작업이 없고, 모두 대기중일때
-        if (jobList.length === 0 && waitingList.length >0){
-            waitingList.sort((a,b) => a[1]-b[1]);
-            while (waitingList.length > 0){
-                let waitJob = waitingList.shift();
-                currentTime += waitJob[1];
-                answer += currentTime - waitJob[0]; 
-            }
+
+        if (waitq.length > 0) {
+            waitq.sort((a, b) => a[1] - b[1]); // 대기열을 소요 시간이 짧은 순서로 정렬
+            let waitingJob = waitq.shift();
+            currentTime += waitingJob[1];
+            ans += currentTime - waitingJob[0]; // 대기 시간 + 처리 시간
+        } else {
+            currentTime = jobs[0][0]; // 대기열이 비어있을 경우, 다음 작업의 요청 시점으로 현재 시간 갱신
         }
-        
     }
-    
-    
-    return Math.floor(answer/jobsCnt); //버림
+
+    return Math.floor(ans / jobsCnt);
 }
