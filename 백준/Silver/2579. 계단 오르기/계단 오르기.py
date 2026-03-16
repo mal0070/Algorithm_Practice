@@ -1,11 +1,19 @@
-n = int(input())
-s = [0 for i in range(301)]
-dp = [0 for i in range(301)]
-for i in range(n):
-    s[i] = int(input())
-dp[0] = s[0]
-dp[1] = s[0] + s[1]
-dp[2] = max(s[1] + s[2], s[0] + s[2])
-for i in range(3, n):
-    dp[i] = max(dp[i - 3] + s[i - 1] + s[i], dp[i - 2] + s[i])
-print(dp[n - 1])
+import sys
+
+n  = int(sys.stdin.readline()) #자연수
+arr = []
+for _ in range(n):
+    arr.append(int(sys.stdin.readline()))
+
+#dp: i번째 계단 밟았을 때, 최대 점수 
+dp = [0]*n
+dp[0] = arr[0] #n=1
+if n>1:
+    dp[1] = arr[0]+arr[1]
+if n>2:
+    dp[2] = max(arr[0]+arr[2],arr[1]+arr[2])
+
+for i in range(3,n):
+    dp[i] = max(dp[i-2] + arr[i], dp[i-3]+arr[i-1]+arr[i])
+    
+print(dp[n-1])
