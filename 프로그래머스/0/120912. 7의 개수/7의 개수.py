@@ -1,5 +1,3 @@
 def solution(array):
-    answer = 0
-    for n in array:
-        answer += str(n).count('7')
+    answer = str(array).count('7')
     return answer
