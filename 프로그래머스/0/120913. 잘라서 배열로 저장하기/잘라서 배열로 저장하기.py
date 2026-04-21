@@ -1,15 +1,2 @@
 def solution(my_str, n):
-    answer = []
-    n_str = ''
-    for i in my_str:
-        n_str = n_str + i
-        if len(n_str) == n:
-            answer.append(n_str)
-            n_str = ''
-    
-    div, mod = divmod(len(my_str), n)
-    
-    if mod > 0:
-        answer.append(my_str[n*div:])
-            
-    return answer
+    return [my_str[i:i+n] for i in range(0, len(my_str), n)] #슬라이싱은 인덱스 초과해도 에러 안남
