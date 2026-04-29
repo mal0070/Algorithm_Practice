@@ -1,8 +1,7 @@
 def solution(array):
     set_array = list(set(array))
-    counts = [array.count(n) for n in set_array] #[1,1,3,3,3,1]
+    counts = [array.count(n) for n in set_array] 
     value = []
-    answer = []
     
     for x in counts:
         if max(counts) == x:
